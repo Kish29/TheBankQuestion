@@ -39,36 +39,34 @@ void SavingAccount::settle(Date date)
 {
 	this->Interest += floor((this->rate * (this->Deposite * this->date.Days_of_Cal(date))) / 365 * 100 + 0.5) / 100;
 	//计算利息，方便起见，均用365天
-	if (this->date.the_month == 1)
-	{
-		this->Deposite += this->Interest;	//加上利息
-		this->Interest = 0;//利息清零
-	}
+	this->Deposite += this->Interest;	//加上利息
 	this->date.Set_Date(date.the_year, date.the_month, date.the_day);
 	this->show();
+	//结算后利息清零
+	this->Interest = 0;
 }
 
 //存款函数
-void SavingAccount::deposite(Date date, double deposite, const std::string operation)
+void SavingAccount::deposite(Date date, int deposite, const std::string operation)
 {
 	if (this->Deposite == 0)	//如果是第一次存款
 	{
-		this->Deposite += (int)deposite;	//存款更新
+		this->Deposite += deposite;	//存款更新
 		this->date.Set_Date(date.the_year, date.the_month, date.the_day);	//将账户的操作日期刷新
 		this->operation = operation;	//记录账户的操作信息
-		this->total += (int)deposite;
+		this->total += deposite;
 		show();
 		return;
 	}
 	else
-		SavActCalc(date, (int)deposite);
+		SavActCalc(date, deposite);
 	this->date.Set_Date(date.the_year, date.the_month, date.the_day);	//将账户的操作日期刷新
 	this->operation = operation;	//记录账户的操作信息
 	show();
 }
 
 //取款函数
-void SavingAccount::withdraw(Date date, double withdraw, const std::string operation)
+void SavingAccount::withdraw(Date date, int withdraw, const std::string operation)
 {
 	int new_withdraw = 0;
 	if (withdraw > this->Deposite)	//如果取款大于存款，则不能将钱取出来
@@ -82,7 +80,7 @@ void SavingAccount::withdraw(Date date, double withdraw, const std::string opera
 		this->SavActCalc(date, -new_withdraw);
 	}
 	else
-		this->SavActCalc(date, (int)-withdraw);
+		this->SavActCalc(date, -withdraw);
 	this->operation = operation;
 	this->date.Set_Date(date.the_year, date.the_month, date.the_day);	//更新日期
 	show();		//显示相关信息
@@ -159,20 +157,20 @@ void CreditAccount::CrdSettle(Date date, int current_money, string operation)
 	cout << endl;
 	//显示一下可用额度
 	cout << "\n\t" << '\t' << '\t' << "\tAvaliable Balance: " << this->Credict_Money << '\t';
-	if (this->Deposite < 0)
-		cout << "The Account who loawned money which haven't been paid: " << this->Deposite<< endl << '\n';
+	if (this->Interest < 0)
+		cout << "The Account who loawned Interest which haven't been paid: " << this->Interest << endl << '\n';
 	cout << endl;
 	total += Deposite - last_Deposit;
 }
 
 //信用卡账户的存款操作
-void CreditAccount::deposite(Date date, double deposite, const string operation)
+void CreditAccount::deposite(Date date, int deposite, const string operation)
 {
-	CrdSettle(date, (int)deposite, operation);
+	CrdSettle(date, deposite, operation);
 }
 
 //用户的取款操作
-void CreditAccount::withdraw(Date date, double withdraw, const string operation)
+void CreditAccount::withdraw(Date date, int withdraw, const string operation)
 {
 	//每取一次款，额度都要减少
 	int new_withdraw = 0;
@@ -183,11 +181,11 @@ void CreditAccount::withdraw(Date date, double withdraw, const string operation)
 			std::cout << "Your withdraw overed your credit_money! And your credit_money is: " << this->Credict_Money << '\n';
 			std::cout << "Please try again and to make sure you withdraw doesn't over your deposite:";
 			std::cin >> new_withdraw;
-		} while (new_withdraw > this->Credict_Money);
+		} while (new_withdraw > this->Deposite);
 		CrdSettle(date, -new_withdraw, operation);
 	}
 	else
-		CrdSettle(date, (int)-withdraw, operation);
+		CrdSettle(date, -withdraw, operation);
 }
 
 //用户的总结算

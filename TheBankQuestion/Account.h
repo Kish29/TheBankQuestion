@@ -20,8 +20,8 @@ public:
 	double rate = 0;	//分为储蓄账户的利率和信用卡账户的利率
 	Account() {};
 	Account(Date date, std::string idcode, double rate);	
-	virtual void deposite(Date date, double deposite, const string operation) = 0;
-	virtual void withdraw(Date date, double deposite, const string operation) = 0;
+	virtual void deposite(Date date, int deposite, const string operation) = 0;
+	virtual void withdraw(Date date, int deposite, const string operation) = 0;
 	virtual void settle(Date date) = 0;
 	virtual void show()=0;
 };
@@ -36,8 +36,8 @@ public:
 	SavingAccount(Date date, std::string idcode, double rate);
 	void SavActCalc(Date date, int current_farewell);
 	virtual void settle(Date date);
-	virtual void deposite(Date date, double deposite, const std::string operation);	//存款操作
-	virtual void withdraw(Date date, double withdraw, const std::string operation);	//取款操作
+	virtual void deposite(Date date, int deposite, const std::string operation);	//存款操作
+	virtual void withdraw(Date date, int withdraw, const std::string operation);	//取款操作
 	virtual void show();
 };
 
@@ -52,8 +52,8 @@ public:
 	CreditAccount(Date date, std::string idcode, double rate);
 	void get_Crd_Anf(double Credict_Money, double anual_fee);
 	void CrdSettle(Date date, int curren_money, string operation);
-	virtual void deposite(Date date, double deposite, const string operation);
-	virtual void withdraw(Date date, double deposite, const string operation);
+	virtual void deposite(Date date, int deposite, const string operation);
+	virtual void withdraw(Date date, int deposite, const string operation);
 	virtual void settle(Date date);
 	virtual void show();
 };
